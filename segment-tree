@@ -1,0 +1,151 @@
+//segmentno drvo
+#include <iostream>
+#include <vector>
+#include <climits>
+#include <cstdlib>
+#include <ctime>
+
+using namespace std;
+
+class SegmentTree
+{
+private:
+    vector<int> tree;
+    int n;
+
+    void update(int node, int start, int end, int i, int val)
+    {
+        if (start == end)
+        {
+            tree[node] = val;
+            return;
+        }
+        int mid = (start+end)/2;
+        if (start <= i && i <= mid)
+        {
+            update(2*node, start, mid, i, val);
+        }
+        else
+        {
+            update(2*node+1, mid+1, end, i, val);
+        }
+        tree[node] = tree[2*node] + tree[2*node+1];
+    }
+
+    void izgradi(int node, int start, int end, const vector<int>& arr)
+    {
+        if (start == end)
+        {
+            tree[node] = arr[start];
+        }
+        else
+        {
+            int mid = (start + end) / 2;
+            izgradi(2 * node, start, mid, arr);
+            izgradi(2 * node + 1, mid + 1, end, arr);
+            tree[node] = tree[2 * node] + tree[2 * node + 1];
+        }
+    }
+
+    int minimum(int node, int start, int end, int L, int R)
+    {
+        if (R < start || end < L)
+        {
+            return INT_MAX;
+        }
+        if (L <= start && end <= R)
+        {
+            return tree[node];
+        }
+        int mid = (start + end) / 2;
+        int leftMin = minimum(2 * node, start, mid, L, R);
+        int rightMin = minimum(2 * node + 1, mid + 1, end, L, R);
+        return min(leftMin, rightMin);
+    }
+
+    int maxi(int node, int start, int end, int L, int R)
+    {
+        if (R < start || end < L)
+        {
+            return INT_MIN;
+        }
+        if (L <= start && end <= R)
+        {
+            return tree[node];
+        }
+        int mid = (start + end) / 2;
+        int leftMax = maxi(2 * node, start, mid, L, R);
+        int rightMax = maxi(2 * node + 1, mid + 1, end, L, R);
+        return max(leftMax, rightMax);
+    }
+
+    int suma(int node, int start, int end, int L, int R)
+    {
+        if (R < start || end < L)
+        {
+            return 0;
+        }
+        if (L <= start && end <= R)
+        {
+            return tree[node];
+        }
+        int mid = (start + end) / 2;
+        int LHS = suma(2 * node, start, mid, L, R);
+        int RHS = suma(2 * node + 1, mid + 1, end, L, R);
+        return LHS + RHS;
+    }
+
+public:
+    SegmentTree(const vector<int>& arr)
+    {
+        n = arr.size();
+        tree.resize(4 * n);
+        izgradi(1, 0, n - 1, arr);
+    }
+    void updateT(int i, int val)
+    {
+        update(1,0,n-1,i,val);
+    }
+    int query(int L, int R)
+    {
+        return suma(1, 0, n - 1, L, R);
+    }
+
+    int minQuery(int L, int R)
+    {
+        return minimum(1, 0, n - 1, L, R);
+    }
+
+    int maxQuery(int L, int R)
+    {
+        return maxi(1, 0, n - 1, L, R);
+    }
+};
+
+int main()
+{
+    srand(time(0));
+    int n = 30 + rand() % 155;
+    vector<int> v(n);
+
+    for (int i = 0; i < n; ++i)
+    {
+        v[i] = rand() % 100;
+    }
+
+    cout << "Niza: ";
+    for (int num : v)
+    {
+        cout << num << " ";
+    }
+    cout << '\n';
+    SegmentTree segTree(v);
+    segTree.updateT(2,101);
+
+    cout << segTree.query(1, 3) << '\n';
+    cout << segTree.query(1, 3) << '\n';
+    cout << segTree.minQuery(1, 3) << '\n';
+    cout << segTree.maxQuery(1, 3) << '\n';
+
+    return 0;
+}
