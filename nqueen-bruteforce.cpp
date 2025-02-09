@@ -48,7 +48,6 @@ int main() {
 
     vector<vector<pair<int, int>>> s;
     vector<pair<int, int>> v;
-
     solve(n, v, s);
 
     int ctr = 0;
