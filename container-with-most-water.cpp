@@ -2,7 +2,7 @@
 #include<vector>
 using namespace std;
 
-class Solution { //greedy algoritam, raboti za site test slucai 
+class Solution { //greedy algoritam, raboti za site test slucai
     public:
         int maxArea(vector<int>& height) {
             int left=0, right=height.size()-1;
