@@ -97,9 +97,7 @@ int main()
         t.y = static_cast<float>(rand()) / RAND_MAX * 100.0;
         points.push_back(t);
     }
-
     sort(points.begin(), points.end(), cmp);
-
     auto x = smallest_distance_dq(points, 0, points.size() - 1);
     cout << "[" << x.first.first << ", " << x.first.second << "]" << " -> " << x.second;
     return 0;
